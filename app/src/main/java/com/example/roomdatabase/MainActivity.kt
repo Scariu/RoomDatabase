@@ -3,10 +3,10 @@ package com.example.roomdatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 /*
-[ ] Navigation
-[ ] Fragmento agregar
-[ ] Fragmento listado
-[ ] Crear Interfaz
+[x] Navigation
+[x] Fragmento agregar First
+[x] Fragmento listado Second
+[x] Crear Interfaz
 [ ] Room
 [ ] _Dao
 [ ] _Base Datos
