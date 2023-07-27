@@ -39,6 +39,7 @@ class FirstFragment : Fragment() {
     ): View? {
         binding = FragmentFirstBinding.inflate(layoutInflater)
         initListeners()
+        cargarTareas()
         return binding.root
        }
 
@@ -53,6 +54,13 @@ class FirstFragment : Fragment() {
         val dao = TareasDataBase.getDataBase(requireContext()).getTareasDao()
         val tarea = Tareas(texto)
         GlobalScope.launch { dao.insertarTareas(tarea) }
+    }
+    private fun cargarTareas(){
+        val dao = TareasDataBase.getDataBase(requireContext()).getTareasDao()
+        GlobalScope.launch {  val tareas = dao.getTareas()
+            val tareasAsText = tareas.joinToString("\n") { it.nombre }
+            binding.tvMostrar.text = tareasAsText }
+
     }
 
     companion object {
