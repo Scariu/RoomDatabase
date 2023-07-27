@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.roomdatabase.databinding.FragmentFirstBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,8 +38,22 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFirstBinding.inflate(layoutInflater)
+        initListeners()
         return binding.root
        }
+
+    private fun initListeners() {
+        binding.btnAgregar.setOnClickListener{
+            val textoIngresado = binding.etIngresar.text.toString()
+            guardarTarea(textoIngresado)
+        }
+    }
+
+    private fun guardarTarea(texto: String) {
+        val dao = TareasDataBase.getDataBase(requireContext()).getTareasDao()
+        val tarea = Tareas(texto)
+        GlobalScope.launch { dao.insertarTareas(tarea) }
+    }
 
     companion object {
         /**
