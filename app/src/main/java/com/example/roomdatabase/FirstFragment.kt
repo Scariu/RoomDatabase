@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.example.roomdatabase.databinding.FragmentFirstBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class FirstFragment : Fragment() {
     lateinit var binding : FragmentFirstBinding
-    lateinit var repositorio: Repositorio
+    private val tareaViewModel: TareaViewModel by activityViewModels()
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -40,27 +42,23 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFirstBinding.inflate(layoutInflater)
-        initRepositorio()
         initListeners()
         cargarTareas()
         return binding.root
        }
-    private fun initRepositorio(){
-        repositorio = Repositorio(TareasDataBase.getDataBase(requireContext()).getTareasDao())
-    }
     private fun initListeners() {
         binding.btnAgregar.setOnClickListener{
             val textoIngresado = binding.etIngresar.text.toString()
             guardarTarea(textoIngresado)
+            Toast.makeText(requireContext(),"Tarea ingresada.", Toast.LENGTH_LONG).show()
         }
     }
-
     private fun guardarTarea(texto: String) {
         val tarea = Tareas(texto)
-        GlobalScope.launch { repositorio.insertTask(tarea) }
+        tareaViewModel.insertarTarea(tarea)
     }
     private fun cargarTareas(){
-         repositorio.listarTareas().observe(requireActivity()){
+         tareaViewModel.obtenerTareas().observe(requireActivity()){
              val tareasAsText = it.joinToString("\n") { it.nombre }
              binding.tvMostrar.text = tareasAsText//Asigna datos
          }
