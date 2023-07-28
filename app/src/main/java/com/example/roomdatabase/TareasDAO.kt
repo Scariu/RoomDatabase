@@ -1,5 +1,6 @@
 package com.example.roomdatabase
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -10,5 +11,5 @@ interface TareasDAO {
     suspend fun  insertarTareas(tareas: Tareas)
 
     @Query("select * from tabla_tareas order by id ASC")
-    fun getTareas():List<Tareas>
+    fun getTareas(): LiveData<List<Tareas>>
 }
