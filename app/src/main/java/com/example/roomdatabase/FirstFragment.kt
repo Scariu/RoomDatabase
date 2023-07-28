@@ -21,6 +21,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class FirstFragment : Fragment() {
     lateinit var binding : FragmentFirstBinding
+    lateinit var repositorio: Repositorio
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -33,16 +34,20 @@ class FirstFragment : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFirstBinding.inflate(layoutInflater)
+        initRepositorio()
         initListeners()
         cargarTareas()
         return binding.root
        }
-
+    private fun initRepositorio(){
+        repositorio = Repositorio(TareasDataBase.getDataBase(requireContext()).getTareasDao())
+    }
     private fun initListeners() {
         binding.btnAgregar.setOnClickListener{
             val textoIngresado = binding.etIngresar.text.toString()
@@ -51,20 +56,14 @@ class FirstFragment : Fragment() {
     }
 
     private fun guardarTarea(texto: String) {
-        val dao = TareasDataBase.getDataBase(requireContext()).getTareasDao()
         val tarea = Tareas(texto)
-        GlobalScope.launch { dao.insertarTareas(tarea) }
+        GlobalScope.launch { repositorio.insertTask(tarea) }
     }
     private fun cargarTareas(){
-        val dao = TareasDataBase.getDataBase(requireContext()).getTareasDao()
-         val tareas = dao.getTareas().observe(requireActivity()){
+         repositorio.listarTareas().observe(requireActivity()){
              val tareasAsText = it.joinToString("\n") { it.nombre }
              binding.tvMostrar.text = tareasAsText//Asigna datos
          }
-
-
-
-
     }
 
     companion object {
